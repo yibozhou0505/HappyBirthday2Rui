@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rui，生日快乐！🎂</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "PingFang SC", "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe8f0, #ffd9b3, #ffeec9);
+      overflow: hidden;
+      color: #333;
+    }
+
+    .card {
+      position: relative;
+      max-width: 520px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      border-radius: 24px;
+      padding: 28px 26px 24px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .card::before,
+    .card::after {
+      content: "❤";
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.5;
+      animation: float 6s infinite ease-in-out;
+    }
+
+    .card::before {
+      top: -14px;
+      left: 18px;
+    }
+
+    .card::after {
+      bottom: -10px;
+      right: 16px;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #ff758f;
+      margin-bottom: 1.2rem;
+    }
+
+    .msg {
+      text-align: left;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin: 0 auto 1.6rem;
+      max-width: 460px;
+    }
+
+    .msg p + p {
+      margin-top: 0.5rem;
+    }
+
+    .msg span.highlight {
+      color: #ff8c42;
+      font-weight: 600;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff8fb1, #ffb347);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(255, 138, 160, 0.5);
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+        filter 0.15s ease;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 10px 22px rgba(255, 138, 160, 0.65);
+      filter: brightness(1.03);
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 5px 12px rgba(255, 138, 160, 0.4);
+      filter: brightness(0.97);
+    }
+
+    .secret {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .footer {
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 0.4rem;
+    }
+
+    /* emoji “纸屑” */
+    .confetti {
+      position: fixed;
+      top: -20px;
+      font-size: 20px;
+      pointer-events: none;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 22px 18px 18px;
+        border-radius: 20px;
+      }
+      h1 {
+        font-size: 1.7rem;
+      }
+      .msg {
+        font-size: 0.92rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Rui，生日快乐！🎉</h1>
+    <div class="subtitle">愿你这一年，温柔有趣，心想事成 ✨</div>
+
+    <div class="msg" id="typewriter">
+      <!-- 打字机文字由 JS 填充 -->
+    </div>
+
+    <div class="buttons">
+      <button id="giftBtn">点我拆生日礼物 🎁</button>
+      <button id="colorBtn">换个小心情背景 🌈</button>
+    </div>
+
+    <div class="secret" id="secretMsg">
+      无论今天有多少消息，有多少“生日快乐”，<br />
+      这一条来自某个<span class="highlight">特别在意你的人 💌</span>。<br />
+      愿你永远被温柔以待，也永远相信自己超棒的。
+    </div>
+
+    <div class="footer">Made with ❤️ by 你的好朋友</div>
+  </div>
+
+  <script>
+    // --- 打字机效果 ---
+    const content = [
+      "嘿 Rui，今天是你的专属纪念日。",
+      "想对你说很多很多话，但先把最重要的那句放在前面：",
+      "生日快乐呀！",
+      "",
+      "谢谢你一路以来的陪伴、耐心和温柔。",
+      "希望以后提到这一天的时候，你想到的不是“又老一岁”，",
+      "而是“啊，这一年也被我过得很不错”。"
+    ];
+
+    const typewriterEl = document.getElementById("typewriter");
+
+    function typeWriter(lines, el, speed = 45) {
+      let lineIndex = 0;
+      let charIndex = 0;
+      let currentLine = "";
+
+      function type() {
+        if (lineIndex >= lines.length) return;
+
+        if (charIndex < lines[lineIndex].length) {
+          currentLine += lines[lineIndex].charAt(charIndex);
+          el.innerHTML =
+            lines
+              .slice(0, lineIndex)
+              .map((l) => `<p>${l}</p>`)
+              .join("") + `<p>${currentLine}</p>`;
+          charIndex++;
+          setTimeout(type, speed);
+        } else {
+          // 换行
+          lineIndex++;
+          charIndex = 0;
+          currentLine = "";
+          if (lineIndex < lines.length) {
+            setTimeout(type, 350);
+          }
+        }
+      }
+
+      type();
+    }
+
+    typeWriter(content, typewriterEl);
+
+    // --- 生日礼物按钮：显示隐藏祝福 + 简单纸屑 ---
+    const giftBtn = document.getElementById("giftBtn");
+    const secretMsg = document.getElementById("secretMsg");
+
+    giftBtn.addEventListener("click", () => {
+      if (secretMsg.style.display === "block") {
+        secretMsg.style.display = "none";
+        giftBtn.textContent = "点我拆生日礼物 🎁";
+      } else {
+        secretMsg.style.display = "block";
+        giftBtn.textContent = "再来点纸屑！✨";
+        launchConfetti();
+      }
+    });
+
+    // --- 背景颜色随机切换 ---
+    const colorBtn = document.getElementById("colorBtn");
+    const backgrounds = [
+      "radial-gradient(circle at top, #ffe8f0, #ffd9b3, #ffeec9)",
+      "radial-gradient(circle at top, #e0f7ff, #fce1ff, #ffe4c4)",
+      "radial-gradient(circle at top, #e5ffd5, #ffe3f1, #fff4c4)",
+      "radial-gradient(circle at top, #f9d4ff, #ffe8e1, #fdf7c4)"
+    ];
+
+    colorBtn.addEventListener("click", () => {
+      const random = Math.floor(Math.random() * backgrounds.length);
+      document.body.style.background = backgrounds[random];
+      launchConfetti(15);
+    });
+
+    // --- Emoji 纸屑 ---
+    function launchConfetti(count = 30) {
+      const emojis = ["🎉", "✨", "🎂", "🎈", "❤️"];
+      const duration = 2500;
+
+      for (let i = 0; i < count; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.textContent =
+          emojis[Math.floor(Math.random() * emojis.length)];
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.animationDuration =
+          1.5 + Math.random() * 1.5 + "s";
+        conf.style.fontSize = 18 + Math.random() * 10 + "px";
+        document.body.appendChild(conf);
+
+        setTimeout(() => {
+          conf.remove();
+        }, duration);
+      }
+    }
+  </script>
+</body>
+</html>
